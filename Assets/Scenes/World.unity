@@ -44802,6 +44802,16 @@ PrefabInstance:
       propertyPath: m_UseGravity
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1720468504551506493, guid: afbc4e914584faf41a330b7da534de3d,
+        type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 963194227}
+    - target: {fileID: 1720468504551506493, guid: afbc4e914584faf41a330b7da534de3d,
+        type: 3}
+      propertyPath: scaleFactor
+      value: 1.3
+      objectReference: {fileID: 0}
     - target: {fileID: 6526703252819596770, guid: afbc4e914584faf41a330b7da534de3d,
         type: 3}
       propertyPath: m_RootOrder

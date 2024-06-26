@@ -38,7 +38,7 @@ public class move : MonoBehaviour
 
     public void Update()
     {
-        cam.transform.position = new Vector3(gameObject.transform.position.x, cam.transform.position.y, gameObject.transform.position.z - 6.9f);
+        
 
         if (animator != null && Time.deltaTime > 0.0f)
         {
