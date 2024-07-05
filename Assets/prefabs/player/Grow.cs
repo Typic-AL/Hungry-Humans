@@ -17,6 +17,8 @@ public class Grow : MonoBehaviour
     private float camTargetZ;
     private float camInitZ;
 
+    [SerializeField] private Timer foodTimer;
+
     private Vector3 scale;
     private Vector3 targetScale;
     private bool canGrow = false;
@@ -38,6 +40,10 @@ public class Grow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(foodTimer.timeRemaining == 0)
+        {
+            Application.Quit();
+        }
         if(canGrow)
         {
             if (timeElapsed <= scaleDuration)
@@ -63,39 +69,45 @@ public class Grow : MonoBehaviour
         if(col.gameObject.GetComponent<FoodItem>() != null)
         {
             Eat(col.gameObject.GetComponent<FoodItem>());
-            grow();
+            
         }
     }
 
     private void OnTriggerEnter(Collider col)
     {
         Eat(col.gameObject.GetComponent<FoodItem>());
-        grow();
+        
     }
 
     private void Eat(FoodItem f)
     {
         if(f.sizeReq <= level)
         {
+            foodTimer.StopTimer();
+            foodTimer.seconds = (int)(10 / (level + 1) * .9f);
+            foodTimer.StartTimer();
             size += f.sizeRewarded;
             Destroy(f.gameObject);
+            grow();
         }
     }
 
     private void grow()
     {
-        timeElapsed = 0;
-        scale = transform.localScale;
-        targetScale = new Vector3 (scale.x * scaleFactor, scale.y * scaleFactor, scale.z * scaleFactor);
+        
         if (size >= 10*(level + 1)*.75)
         {
-            canGrow = true;
+            timeElapsed = 0;
+            scale = transform.localScale;
+            targetScale = new Vector3(scale.x * scaleFactor, scale.y * scaleFactor, scale.z * scaleFactor);
+
             level += 1;
             size = 0;
             camInitY = cam.transform.position.y;
             camInitZ = camZ;
             camTargetY *= scaleFactor;
             camTargetZ *= scaleFactor;
+            canGrow = true;
         }
     }
 }
