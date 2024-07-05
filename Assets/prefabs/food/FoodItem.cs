@@ -6,9 +6,9 @@ public class FoodItem : MonoBehaviour
 {
     public int sizeReq;
     public int sizeRewarded;
-    
-    
-    
+    public float spawnProbability;
+
+
     // Start is called before the first frame update
     void Start()
     {
