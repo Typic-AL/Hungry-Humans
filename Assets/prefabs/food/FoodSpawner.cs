@@ -5,7 +5,7 @@ using UnityEngine;
 public class FoodSpawner : MonoBehaviour
 {
     public List<FoodItem> foodPrefabs;
-    public int totalFoodCount = 350;
+    public int totalFoodCount = 1000;
     public float spawnIntervalMin = 1f;
     public float spawnIntervalMax = 5f;
     public float xMin = -86f;
@@ -29,7 +29,7 @@ public class FoodSpawner : MonoBehaviour
             {
                 SpawnFood();
             }
-            yield return new WaitForSeconds(Random.Range(spawnIntervalMin, spawnIntervalMax));
+            yield return new WaitForSeconds(.02f/*Random.Range(spawnIntervalMin, spawnIntervalMax)*/);
         }
     }
 

@@ -99,13 +99,13 @@ public class Grow : MonoBehaviour
         {
             timeElapsed = 0;
             scale = transform.localScale;
-            targetScale = new Vector3(scale.x * scaleFactor, scale.y * scaleFactor, scale.z * scaleFactor);
+            targetScale = new Vector3(scale.x * scaleFactor + .2f, scale.y * scaleFactor - .1f, scale.z * scaleFactor + .1f);
 
             level += 1;
             size = 0;
             camInitY = cam.transform.position.y;
             camInitZ = camZ;
-            camTargetY *= scaleFactor;
+            camTargetY *= scaleFactor - .05f;
             camTargetZ *= scaleFactor;
             canGrow = true;
         }

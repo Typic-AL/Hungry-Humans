@@ -15,33 +15,37 @@ public class FoodItem : MonoBehaviour
     }
 
     public int sizeReq;
-    public int sizeRewarded;
-    public float spawnProbability;
+    [HideInInspector] public int sizeRewarded;
+    [HideInInspector] public float spawnProbability;
 
     public Rarity rarity;
-    public float spawnRate;
-    public float timeAdded;
+    [HideInInspector] public float spawnRate;
+    [HideInInspector] public float timeAdded;
 
     // Start is called before the first frame update
-    void Start()
+    void OnValidate()
     {
         switch(rarity)
         {
             case Rarity.common:
-                spawnRate = 50f;
+                spawnRate = 35f;
                 timeAdded = 1f;
+                sizeRewarded = 1;
                 break;
             case Rarity.rare:
                 spawnRate = 25f;
                 timeAdded = 2f;
+                sizeRewarded = 2;
                 break;
             case Rarity.epic:
                 spawnRate = 15f;
                 timeAdded = 3f;
+                sizeRewarded = 3 * (sizeReq + 1);
                 break;
             case Rarity.legendary:
-                spawnRate = 7f;
+                spawnRate = 5f;
                 timeAdded = 4f;
+                sizeRewarded = 4 * (sizeReq + 1);
                 break;
 
 
