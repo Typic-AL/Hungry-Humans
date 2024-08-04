@@ -20,7 +20,9 @@ public class FoodItem : MonoBehaviour
 
     public Rarity rarity;
     [HideInInspector] public float spawnRate;
-    [HideInInspector] public float timeAdded;
+    [HideInInspector] public int timeAdded;
+
+    public float heightOffset;
 
     // Start is called before the first frame update
     void OnValidate()
@@ -29,22 +31,22 @@ public class FoodItem : MonoBehaviour
         {
             case Rarity.common:
                 spawnRate = 35f;
-                timeAdded = 1f;
+                timeAdded = 1;
                 sizeRewarded = 1;
                 break;
             case Rarity.rare:
                 spawnRate = 25f;
-                timeAdded = 2f;
+                timeAdded = 2;
                 sizeRewarded = 2;
                 break;
             case Rarity.epic:
                 spawnRate = 15f;
-                timeAdded = 3f;
+                timeAdded = 3;
                 sizeRewarded = 3 * (sizeReq + 1);
                 break;
             case Rarity.legendary:
                 spawnRate = 5f;
-                timeAdded = 4f;
+                timeAdded = 4;
                 sizeRewarded = 4 * (sizeReq + 1);
                 break;
 
@@ -52,6 +54,12 @@ public class FoodItem : MonoBehaviour
         }
 
         spawnProbability = spawnRate;
+    }
+
+    private void Start()
+    {
+        if(heightOffset != 0)
+            transform.position = new Vector3(transform.position.x, heightOffset, transform.position.z);
     }
 
     // Update is called once per frame

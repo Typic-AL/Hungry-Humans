@@ -213,7 +213,7 @@ public class Timer : MonoBehaviour
     {
         if(standardSlider.value > standardSlider.minValue)
         {
-            standardSlider.value -= Time.deltaTime;
+            standardSlider.value = (float)timeRemaining;//Time.deltaTime;
         }
     }
     private void StandardSliderUp()

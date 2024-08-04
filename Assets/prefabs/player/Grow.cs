@@ -83,14 +83,22 @@ public class Grow : MonoBehaviour
     {
         if(f.sizeReq <= level)
         {
-            foodTimer.StopTimer();
+            //foodTimer.StopTimer();
             foodTimer.seconds = (int)(10 / (level + 1) * .9f);
-            foodTimer.StartTimer();
+            foodTimer.timeRemaining += f.timeAdded;
+            if (foodTimer.timeRemaining >= foodTimer.seconds)
+                foodTimer.timeRemaining = foodTimer.seconds;
+            //foodTimer.StartTimer();
             size += f.sizeRewarded;
             Destroy(f.gameObject);
             grow();
         }
     }
+
+    /*public void TestPrint()
+    {
+        print("oh my goodness");
+    }*/
 
     private void grow()
     {

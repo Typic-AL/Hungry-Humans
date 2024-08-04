@@ -29,7 +29,7 @@ public class FoodSpawner : MonoBehaviour
             {
                 SpawnFood();
             }
-            yield return new WaitForSeconds(.02f/*Random.Range(spawnIntervalMin, spawnIntervalMax)*/);
+            yield return new WaitForSeconds(.001f/*Random.Range(spawnIntervalMin, spawnIntervalMax)*/);
         }
     }
 
@@ -37,7 +37,7 @@ public class FoodSpawner : MonoBehaviour
     {
         Vector2 randomPosition = GetRandomPosition();
         GameObject foodToSpawn = GetRandomFoodPrefab();
-        GameObject spawned = Instantiate(foodToSpawn, new Vector3(randomPosition.x, 0, randomPosition.y), Quaternion.identity);
+        GameObject spawned = Instantiate(foodToSpawn, new Vector3(randomPosition.x, foodToSpawn.transform.position.y, randomPosition.y), Quaternion.identity);
         spawnedFood.Add(spawned);
     }
 
