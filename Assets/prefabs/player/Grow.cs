@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Grow : MonoBehaviour
 {
     public int size = 0;
-    public int level = 0;
+    public int level = 5;
     public float scaleFactor;
     public float scaleDuration;
 
@@ -23,6 +24,8 @@ public class Grow : MonoBehaviour
     private Vector3 targetScale;
     private bool canGrow = false;
     private float timeElapsed = 0;
+
+    [SerializeField] private TextMeshProUGUI levelText;
     
     
     // Start is called before the first frame update
@@ -34,13 +37,17 @@ public class Grow : MonoBehaviour
         camTargetZ = 6.9f;
         camZ = camTargetZ;
         camInitZ = camZ;
+
+        levelText.text = "Level: " + (level + 1).ToString();
+        gm.i.foodTimerCountdownAmount = Time.deltaTime;
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(foodTimer.timeRemaining == 0)
+        gm.i.foodTimerCountdownAmount = Time.deltaTime + (Time.deltaTime * .1f * level);
+        if (foodTimer.timeRemaining == 0)
         {
             Application.Quit();
         }
@@ -84,7 +91,7 @@ public class Grow : MonoBehaviour
         if(f.sizeReq <= level)
         {
             //foodTimer.StopTimer();
-            foodTimer.seconds = (int)(10 / (level + 1) * .9f);
+            foodTimer.seconds = 10;//+ (level);
             foodTimer.timeRemaining += f.timeAdded;
             if (foodTimer.timeRemaining >= foodTimer.seconds)
                 foodTimer.timeRemaining = foodTimer.seconds;
@@ -110,6 +117,9 @@ public class Grow : MonoBehaviour
             targetScale = new Vector3(scale.x * scaleFactor + .2f, scale.y * scaleFactor - .1f, scale.z * scaleFactor + .1f);
 
             level += 1;
+            levelText.text = "Level: " + (level + 1).ToString();
+       
+
             size = 0;
             camInitY = cam.transform.position.y;
             camInitZ = camZ;

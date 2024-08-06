@@ -5,13 +5,14 @@ using UnityEngine;
 public class FoodSpawner : MonoBehaviour
 {
     public List<FoodItem> foodPrefabs;
-    public int totalFoodCount = 1000;
+    public int totalFoodCount;
+    public int quickSpawnCount;
     public float spawnIntervalMin = 1f;
     public float spawnIntervalMax = 5f;
-    public float xMin = -86f;
-    public float xMax = 77f;
-    public float yMin = -94f;
-    public float yMax = 94f;
+    public float xMin = -59f;
+    public float xMax = 59f;
+    public float yMin = -59f;
+    public float yMax = 59f;
     public float spacingMargin = 20f;
 
     private List<GameObject> spawnedFood = new List<GameObject>();
@@ -19,6 +20,11 @@ public class FoodSpawner : MonoBehaviour
     void Start()
     {
         StartCoroutine(SpawnFoodRoutine());
+    }
+
+    private void Update()
+    {
+        print(spawnedFood.Count);
     }
 
     IEnumerator SpawnFoodRoutine()
@@ -29,7 +35,10 @@ public class FoodSpawner : MonoBehaviour
             {
                 SpawnFood();
             }
-            yield return new WaitForSeconds(.001f/*Random.Range(spawnIntervalMin, spawnIntervalMax)*/);
+            if(spawnedFood.Count <= quickSpawnCount)
+                yield return new WaitForSeconds(.001f);
+            else
+                yield return new WaitForSeconds(Random.Range(spawnIntervalMin, spawnIntervalMax));
         }
     }
 

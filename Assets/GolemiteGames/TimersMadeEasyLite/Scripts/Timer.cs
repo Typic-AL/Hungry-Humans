@@ -10,6 +10,7 @@ using UnityEngine.Events;
 public class Timer : MonoBehaviour
 {
     public UnityEvent onTimerEnd;
+    
 
     [Range(0, 23)]
     public int hours;
@@ -41,6 +42,7 @@ public class Timer : MonoBehaviour
 
     [Tooltip("If checked, runs the timer on play")]
     public bool startAtRuntime = true;
+    public bool isFoodTimer = false;
 
     [Tooltip("Select what to display")]
     public bool hoursDisplay = false;
@@ -66,6 +68,10 @@ public class Timer : MonoBehaviour
 
     private void Awake()
     {
+        if(GetComponent<FoodItem>())
+        {
+            isFoodTimer = true;
+        }
         if(!standardText)
         if(GetComponent<Text>())
         {
@@ -180,7 +186,10 @@ public class Timer : MonoBehaviour
         which sets the time remaining to 0. This is accurate up to 20 milliseconds or 0.02 of a second.*/  
         if (timeRemaining > 0.02)
         {
-            timeRemaining -= Time.deltaTime;
+            if(isFoodTimer)
+                timeRemaining -= gm.i.foodTimerCountdownAmount;
+            else
+                timeRemaining -= Time.deltaTime;
             DisplayInTextObject();
         }
         else
