@@ -5,6 +5,7 @@ using UnityEngine;
 public class FoodSpawner : MonoBehaviour
 {
     public List<FoodItem> foodPrefabs;
+    public Grow player;
     public int totalFoodCount;
     public int quickSpawnCount;
     public float spawnIntervalMin = 1f;
@@ -13,10 +14,15 @@ public class FoodSpawner : MonoBehaviour
     public float xMax = 59f;
     public float yMin = -59f;
     public float yMax = 59f;
-    public float spacingMargin = 20f;
+    public float spacingMargin = 30f;
 
-    private List<GameObject> spawnedFood = new List<GameObject>();
+    public List<GameObject> spawnedFood = new List<GameObject>();
 
+    void Awake()
+    {
+        gm.i.foodSpawner = GetComponent<FoodSpawner>();
+    }
+    
     void Start()
     {
         StartCoroutine(SpawnFoodRoutine());
@@ -24,7 +30,7 @@ public class FoodSpawner : MonoBehaviour
 
     private void Update()
     {
-        print(spawnedFood.Count);
+        
     }
 
     IEnumerator SpawnFoodRoutine()

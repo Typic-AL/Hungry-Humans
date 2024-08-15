@@ -25,6 +25,10 @@ public class gm
             return instance;
         }
     }
-
+    
     public float foodTimerCountdownAmount;
+    public List<GameObject> aiTargetedFood = new List<GameObject>(6);
+    public List<ai> spawnedAis = new List<ai>();
+    public Grow player;
+    public FoodSpawner foodSpawner;
 }

@@ -331,7 +331,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sizeReq: 0
-  sizeRewarded: 2
+  sizeRewarded: 1
+  spawnProbability: 35
+  playerOnly: 1
+  rarity: 0
+  spawnRate: 35
+  timeAdded: 1
+  heightOffset: 0
 --- !u!54 &3214330564561584234
 Rigidbody:
   m_ObjectHideFlags: 0

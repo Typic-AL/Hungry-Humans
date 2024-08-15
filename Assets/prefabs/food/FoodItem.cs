@@ -18,6 +18,8 @@ public class FoodItem : MonoBehaviour
     [HideInInspector] public int sizeRewarded;
     [HideInInspector] public float spawnProbability;
 
+    public bool playerOnly;
+
     public Rarity rarity;
     [HideInInspector] public float spawnRate;
     [HideInInspector] public int timeAdded;
