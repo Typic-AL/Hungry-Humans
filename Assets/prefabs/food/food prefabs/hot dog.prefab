@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7476470257444994506}
   - component: {fileID: 2948071440893611785}
   - component: {fileID: 2627203216404884296}
+  - component: {fileID: 5576604568194963988}
   m_Layer: 0
   m_Name: hot dog
   m_TagString: Untagged
@@ -49,6 +50,7 @@ MonoBehaviour:
   sizeReq: 0
   sizeRewarded: 2
   spawnProbability: 25
+  playerOnly: 0
   rarity: 1
   spawnRate: 25
   timeAdded: 2
@@ -66,6 +68,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.569798, y: 0.26937556, z: 0.31858337}
   m_Center: {x: 0.0051579475, y: 0.14165878, z: -0.011940569}
+--- !u!54 &5576604568194963988
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4804267974726780370}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &6595031373385963977
 PrefabInstance:
   m_ObjectHideFlags: 0

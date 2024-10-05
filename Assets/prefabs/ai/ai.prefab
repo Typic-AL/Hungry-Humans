@@ -101,6 +101,7 @@ MonoBehaviour:
   sizeRewarded: 4
   spawnProbability: 5
   playerOnly: 1
+  ai: 1
   rarity: 3
   spawnRate: 5
   timeAdded: 4

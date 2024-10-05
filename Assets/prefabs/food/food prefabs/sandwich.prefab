@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7476470257444994506}
   - component: {fileID: 2948071440893611785}
   - component: {fileID: 2627203216404884296}
+  - component: {fileID: 6328829901007167113}
   m_Layer: 0
   m_Name: sandwich
   m_TagString: Untagged
@@ -49,6 +50,7 @@ MonoBehaviour:
   sizeReq: 0
   sizeRewarded: 1
   spawnProbability: 35
+  playerOnly: 0
   rarity: 0
   spawnRate: 35
   timeAdded: 1
@@ -66,6 +68,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.11054975, y: 0.031050403, z: 0.12846965}
   m_Center: {x: 0.0006853342, y: 0.022496207, z: 0.0013059378}
+--- !u!54 &6328829901007167113
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4804267974726780370}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &2924165208366143409
 PrefabInstance:
   m_ObjectHideFlags: 0

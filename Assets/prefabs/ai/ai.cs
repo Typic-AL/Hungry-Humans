@@ -2,7 +2,13 @@ using System.Runtime;
 using System.Dynamic;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Jobs;
+using Unity.Burst;
+using Unity.Mathematics;
+using Unity.Collections;
 using UnityEngine;
+using System;
+
 
 public class ai : MonoBehaviour
 {
@@ -36,6 +42,11 @@ public class ai : MonoBehaviour
     Vector3 movementDirection = new Vector3(0, 0, 0);
     float distanceToMove = 0;
     Vector3 chosenTargetPos;
+
+    
+
+    private int arrayPos;
+
     // Start is called before the first frame update
     
     void Start()
@@ -47,40 +58,26 @@ public class ai : MonoBehaviour
         
         foodSpawner = gm.i.foodSpawner;
         gm.i.spawnedAis.Add(GetComponent<ai>());
+        
+        arrayPos = gm.i.spawnedAis.IndexOf(GetComponent<ai>());
 
         rb = GetComponent<Rigidbody>();
-        
+
+        moveSpeed *= (1 + ((float)gm.i.upgrades.speed.lvl - 1) / 10);
+
         
     }
 
     // Update is called once per frame
+    
     void Update()
     {
         playerTransform = player.gameObject.transform;
 
-        if(!targetAquired)
-            AquireTargetFood();
-        else
-        {
-            if(targetedAi != null)
-                aiTransform = targetedAi.gameObject.transform;
-            else
-                target = "food";
-
-            if(target == "player" && level > player.level)
-                chosenTargetPos = playerTransform.position;
-            else if(target == "ai" && level > targetedAi.level)
-                chosenTargetPos = aiTransform.position;
-            else
-                target = "food";
-                if(foodTransform == null) foodTransform = FindClosestFood();
-                chosenTargetPos = foodTransform.position;
-        }
-
+        
+        //print(target + " " + arrayPos);
         
         
-        
-
         if (animator != null && Time.deltaTime > 0.0f)
         {
             float distanceTraveledSinceLastFrame = (transform.position - lastPosition).magnitude;
@@ -107,56 +104,101 @@ public class ai : MonoBehaviour
 
         
     }
+
+    void UpdateTarget()
+    {
+        int detectionRange = 50;
+
+        LayerMask mask = LayerMask.GetMask("Player and AI");
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, detectionRange, mask);
+        foreach (Collider hit in hits)
+        {
+            if (hit.gameObject.name.Contains("player") && level > player.level)
+            {
+                target = "player";
+                //break;
+            }
+            else if(hit.gameObject.name.Contains("ai") && level > hit.gameObject.GetComponent<ai>().level && hit.gameObject != gameObject)
+            {   
+                target = "ai";
+                targetedAi = hit.gameObject.GetComponent<ai>();
+                //break;
+            }
+            
+        }
+        
+        
+        if(target == "player" && player.gameObject.activeSelf)
+            chosenTargetPos = playerTransform.position;
+        else if(target == "ai" && targetedAi != null && level > targetedAi.level)
+            chosenTargetPos = targetedAi.transform.position;
+        else
+        {
+            target = "food";
+
+            if(foodTransform == null) foodTransform = FindClosestFood(transform.position);
+
+            chosenTargetPos = foodTransform.position;
+        }
+    
+    }
     
     void FixedUpdate()
     {
+        UpdateTarget();
 
-        #region movement
         // Calculate the direction to the target
         Vector3 direction = (chosenTargetPos - transform.position).normalized;
         float distanceToTarget = Vector3.Distance(transform.position, chosenTargetPos);
         
-
-        // if (distanceToTarget < turnRadius) {
-        //     // Move directly towards the target
-        //     rb.velocity = Vector3.Lerp(rb.velocity, direction * moveSpeed, Time.deltaTime * 5f);
-        // } else {
-        //     // Move in a circular motion
-        //     Vector3 up = Vector3.up; // or any other vector that is perpendicular to the plane of motion
-        //     Vector3 circularDirection = Vector3.Cross(direction, up).normalized;
-        //     Vector3 circularVelocity = circularDirection * moveSpeed;
-        //     rb.velocity = Vector3.Lerp(rb.velocity, circularVelocity, Time.deltaTime * 5f);
-        // }
         rb.velocity = Vector3.Lerp(rb.velocity, direction * moveSpeed, Time.deltaTime * 2f);
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         transform.rotation = Quaternion.LookRotation(rb.velocity);
-        #endregion
-        
-        
     }
 
-    private Transform FindClosestFood()
+    
+
+    public Transform FindClosestFood(Vector3 position)
     {
-        Transform closestFood = null;
-        float minDistance = Mathf.Infinity;
-
-        // Iterate over all food items
-        foreach (GameObject foodItem in foodSpawner.spawnedFood)
+        int searchRadius = 50;
+        Collider[] nearbyObjects = Physics.OverlapSphere(position, searchRadius);
+        GameObject closestFood = null;
+        float closestDistance = Mathf.Infinity;
+        foreach (Collider collider in nearbyObjects)
         {
-            // Check if the food item is not already targeted by another AI
-            FoodItem food = foodItem.GetComponent<FoodItem>();
-            float distance = Vector3.Distance(transform.position, foodItem.transform.position);
-            if (distance <= minDistance)
-            {
-                closestFood = foodItem.transform;
-                minDistance = distance;
-            }
-
-                
+            GameObject food = collider.gameObject;
+            if(!CheckFoodList(food)) continue;
+            if(gm.i.aiTargetedFood.Contains(food) && !gm.i.aiTargetedFood[arrayPos] == food) continue;
             
+            
+            float distance = Vector3.SqrMagnitude(position - food.transform.position);
+            if (distance < closestDistance)
+            {
+                closestFood = food;
+                closestDistance = distance;
+            }
         }
-        return closestFood;
+
+        gm.i.aiTargetedFood[arrayPos] = closestFood;
+
+        return closestFood.transform;
+        
     }
+
+    private bool CheckFoodList(GameObject ob)
+    {
+        if(ob.GetComponent<FoodItem>())
+        {
+            FoodItem item = ob.GetComponent<FoodItem>();
+            if(!item.playerOnly)
+                return true;
+        }
+
+        return false;
+    }
+
+    
 
     //checks for closest target out of the 3
     private bool checkFoodNull()
@@ -166,11 +208,11 @@ public class ai : MonoBehaviour
             print("food null");
             return false;
         }
-        if (targetedAi == null)
-        {
-            print("ai null");
-            return false;
-        }
+        // if (targetedAi == null)
+        // {
+        //     print("ai null");
+        //     return false;
+        // }
         if (playerTransform == null)
         {
             print("player null");
@@ -181,77 +223,10 @@ public class ai : MonoBehaviour
 
     private void RemoveTargetedFood(GameObject foodItem)
     {
-        gm.i.aiTargetedFood.Remove(foodItem);
-    }
-    
-    private void AquireTargetFood()
-    {
-        
-        foodTransform = FindClosestFood();
-        targetedAi = GetTargetedAI();
-
-        if(checkFoodNull())
-        {
-            float distance1 = Vector3.Distance(transform.position, playerTransform.position); //distance to player
-            float distance2 = Vector3.Distance(transform.position, targetedAi.transform.position); // distance to ai
-
-            float closest = Mathf.Min(distance1, distance2);
-
-            if (closest == distance1 && level > player.level)
-                target = "player";
-            else if (closest == distance2 && level > targetedAi.level)
-                target = "ai";
-            else
-                target = "food";
-            
-            targetAquired = true;
-        
-        }
+        //foodSpawner.spawnedFood.Remove(foodItem);
+        gm.i.aiTargetedFood[arrayPos] = null;//new GameObject();
     }
 
-    private Transform FindClosestAI()
-    {
-        //Transform aiTransform = null;
-        float minDistance = Mathf.Infinity;
-        aiTransform = null;
-
-        // Iterate over all AIs in the scene
-        foreach (ai ai in gm.i.spawnedAis)
-        {
-            if (ai.gameObject != gameObject) // Ignore the current AI
-            {
-                float distance = Vector3.Distance(transform.position, ai.transform.position);
-                if (distance < minDistance)
-                {
-                    aiTransform = ai.transform;
-                    targetedAi = ai;
-                    minDistance = distance;
-                }
-            }
-        }
-
-        return aiTransform;
-    }
-
-    private ai GetTargetedAI()
-    {
-        ai target = null;
-        float minDistance = Mathf.Infinity;
-
-        foreach (ai ai in gm.i.spawnedAis)
-        {
-            if (ai.gameObject != gameObject) // Ignore the current AI
-            {
-                float distance = Vector3.Distance(transform.position, ai.transform.position);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    target = ai;
-                }
-            }
-        }
-        return target;
-    }
 
     // Check if the enemy is bigger than the player and if so, attack the player
     void OnCollisionEnter(Collision other)
@@ -271,23 +246,32 @@ public class ai : MonoBehaviour
             ai _ai = other.gameObject.GetComponent<ai>();
             if (level > _ai.level)
             {
+                foodSpawner.spawnedFood.Remove(gm.i.aiTargetedFood[_ai.arrayPos]);
+                gm.i.aiTargetedFood[_ai.arrayPos] = null;//new GameObject();
                 gm.i.spawnedAis.Remove(targetedAi);
                 Destroy(targetedAi.gameObject);
                 targetAquired = false;
             }
         }
+
+        
     }
 
     void OnTriggerEnter(Collider other)
     {
-        Eat(other.gameObject.GetComponent<FoodItem>());
+        if(other.gameObject.GetComponent<FoodItem>())
+            Eat(other.gameObject.GetComponent<FoodItem>());
     }
+
+    
+
+    
 
     private void Eat(FoodItem f)
     {
         if(f.sizeReq <= level)
         {
-            size += f.sizeRewarded;
+            size += (int)(f.sizeRewarded * (1 + ((float)(gm.i.upgrades.range.lvl - 1) / 10)));
             RemoveTargetedFood(f.gameObject);
             foodSpawner.spawnedFood.Remove(f.gameObject);
             Destroy(f.gameObject);
@@ -311,6 +295,10 @@ public class ai : MonoBehaviour
             canGrow = true;
         }
     }
+
+    
+
+    
 }
 
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class move : MonoBehaviour
 {
-    [SerializeField] private float speed;
+    private float speed = 4;
     [SerializeField] private FloatingJoystick joystick;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Animator animator;
@@ -13,9 +13,13 @@ public class move : MonoBehaviour
 
     private Vector3 lastPosition;
 
+    private bool first = true;
+
+
     public void Start()
     {
         lastPosition = transform.position;
+        speed *= (1 + (float)gm.i.upgrades.speed.lvl / 10);
     }
 
     public void FixedUpdate()
@@ -39,7 +43,6 @@ public class move : MonoBehaviour
     public void Update()
     {
         
-
         if (animator != null && Time.deltaTime > 0.0f)
         {
             float distanceTravelledSinceLastFrame = (transform.position - lastPosition).magnitude;

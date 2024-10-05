@@ -19,6 +19,7 @@ public class FoodItem : MonoBehaviour
     [HideInInspector] public float spawnProbability;
 
     public bool playerOnly;
+    public bool ai;
 
     public Rarity rarity;
     [HideInInspector] public float spawnRate;
@@ -65,9 +66,14 @@ public class FoodItem : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+   
+    void OnTriggerEnter(Collider other)
     {
-        
+        if(other.gameObject.name.Contains("wall") && !ai)
+        {
+            gm.i.foodSpawner.spawnedFood.Remove(gameObject);
+            Destroy(gameObject);
+        }
     }
 
     public float GetSpawnRate()

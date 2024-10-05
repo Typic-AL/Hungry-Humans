@@ -10,24 +10,29 @@ public class Grow : MonoBehaviour
     public float scaleFactor;
     public float scaleDuration;
 
+    [SerializeField] private AudioSource chompAudio;
+    [SerializeField] private AudioSource inflateAudio;
+
     [SerializeField] private Camera cam;
     [SerializeField] private FoodSpawner foodSpawner;
 
+    #region camera pos variables
     private float camY;
     private float camTargetY;
     private float camInitY;
     private float camZ;
     private float camTargetZ;
     private float camInitZ;
-    private float camResetY;
-    private float camResetZ;
+    #endregion
 
     [SerializeField] private Timer foodTimer;
 
+    #region scale variables
     private Vector3 scale;
     private Vector3 targetScale;
     private bool canGrow = false;
     private float timeElapsed = 0;
+    #endregion
 
     [SerializeField] private TextMeshProUGUI levelText;
     
@@ -48,9 +53,6 @@ public class Grow : MonoBehaviour
         camZ = camTargetZ;
         camInitZ = camZ;
 
-        camResetY = camY;
-        camResetZ = camZ;
-
         levelText.text = "Level: " + (level + 1).ToString();
         gm.i.foodTimerCountdownAmount = Time.deltaTime;
         
@@ -59,7 +61,6 @@ public class Grow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //print(canGrow);
         gm.i.foodTimerCountdownAmount = Time.deltaTime + (Time.deltaTime * .1f * level);
         if(canGrow)
         {
@@ -100,13 +101,13 @@ public class Grow : MonoBehaviour
     {
         if(f.sizeReq <= level)
         {
-            //foodTimer.StopTimer();
+            chompAudio.PlayOneShot(chompAudio.clip);
             foodTimer.seconds = 10;//+ (level);
             foodTimer.timeRemaining += f.timeAdded;
             if (foodTimer.timeRemaining >= foodTimer.seconds)
                 foodTimer.timeRemaining = foodTimer.seconds;
             //foodTimer.StartTimer();
-            size += f.sizeRewarded;
+            size += (int)(f.sizeRewarded * (1 + (gm.i.upgrades.range.lvl / 10)));
 
             foodSpawner.spawnedFood.Remove(f.gameObject);
             
@@ -142,6 +143,7 @@ public class Grow : MonoBehaviour
             camTargetY *= scaleFactor - .05f;
             camTargetZ *= scaleFactor - .05f;
             canGrow = true;
+            inflateAudio.PlayOneShot(inflateAudio.clip);
         }
     }
 
