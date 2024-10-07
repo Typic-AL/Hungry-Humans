@@ -43,7 +43,7 @@ public class ai : MonoBehaviour
     float distanceToMove = 0;
     Vector3 chosenTargetPos;
 
-    
+    bool playerStarting = false;
 
     private int arrayPos;
 
@@ -63,7 +63,11 @@ public class ai : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
-        moveSpeed *= (1 + ((float)gm.i.upgrades.speed.lvl - 1) / 10);
+        if(gm.i.upgrades.speed.lvl + gm.i.upgrades.range.lvl <= 3) playerStarting = true;
+        else playerStarting = false;
+
+        if(playerStarting) moveSpeed *= 1 + (((float)gm.i.upgrades.speed.lvl + 1) / 10);
+        else moveSpeed *= 1 + ((float)gm.i.upgrades.speed.lvl / 10);
 
         
     }
@@ -75,7 +79,6 @@ public class ai : MonoBehaviour
         playerTransform = player.gameObject.transform;
 
         
-        //print(target + " " + arrayPos);
         
         
         if (animator != null && Time.deltaTime > 0.0f)
@@ -107,7 +110,7 @@ public class ai : MonoBehaviour
 
     void UpdateTarget()
     {
-        int detectionRange = 50;
+        int detectionRange = 30;
 
         LayerMask mask = LayerMask.GetMask("Player and AI");
 
@@ -129,8 +132,10 @@ public class ai : MonoBehaviour
         }
         
         
-        if(target == "player" && player.gameObject.activeSelf)
+        if(target == "player" && player.gameObject.activeSelf && level > player.level)
+        {
             chosenTargetPos = playerTransform.position;
+        }
         else if(target == "ai" && targetedAi != null && level > targetedAi.level)
             chosenTargetPos = targetedAi.transform.position;
         else
@@ -146,15 +151,21 @@ public class ai : MonoBehaviour
     
     void FixedUpdate()
     {
-        UpdateTarget();
+        if(!gm.i.gc.gameOver)
+        {
+            UpdateTarget();
 
-        // Calculate the direction to the target
-        Vector3 direction = (chosenTargetPos - transform.position).normalized;
-        float distanceToTarget = Vector3.Distance(transform.position, chosenTargetPos);
+            // Calculate the direction to the target
+            Vector3 direction = (chosenTargetPos - transform.position).normalized;
+            float distanceToTarget = Vector3.Distance(transform.position, chosenTargetPos);
+            
+            rb.velocity = Vector3.Lerp(rb.velocity, direction * moveSpeed, Time.deltaTime * 2f);
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            transform.rotation = Quaternion.LookRotation(rb.velocity);
+        }
+        else
+            rb.velocity = new Vector3(0f, 0f, 0f);
         
-        rb.velocity = Vector3.Lerp(rb.velocity, direction * moveSpeed, Time.deltaTime * 2f);
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        transform.rotation = Quaternion.LookRotation(rb.velocity);
     }
 
     
@@ -271,7 +282,9 @@ public class ai : MonoBehaviour
     {
         if(f.sizeReq <= level)
         {
-            size += (int)(f.sizeRewarded * (1 + ((float)(gm.i.upgrades.range.lvl - 1) / 10)));
+            if(playerStarting)size += (int)(f.sizeRewarded * (1 + (float)((gm.i.upgrades.range.lvl + 1) / 10)));
+            else size += (int)(f.sizeRewarded * (1 + (float)gm.i.upgrades.range.lvl / 10));
+
             RemoveTargetedFood(f.gameObject);
             foodSpawner.spawnedFood.Remove(f.gameObject);
             Destroy(f.gameObject);

@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     public GameController gc;
 
     public TextMeshProUGUI coinsText;
+    public TextMeshProUGUI coinsGainedText;
 
     private AudioSource winAudio;
     private bool winAudioPlayed = false;
@@ -29,6 +30,8 @@ public class UIManager : MonoBehaviour
         else
         {
             deathScreen.SetActive(false);
+            winScreen.SetActive(false);
+            coinsGainedText.gameObject.SetActive(false);
         }
     }
 
@@ -40,6 +43,7 @@ public class UIManager : MonoBehaviour
             UpdateShrinkText();
             UpdateDeathScreen();
             UpdateWinScreen();
+            UpdateCoinsGainedText();
         }
 
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
@@ -86,6 +90,20 @@ public class UIManager : MonoBehaviour
                 winAudio.PlayOneShot(winAudio.clip);
                 winAudioPlayed = true;
             }
+        }
+    }
+
+    private void UpdateCoinsGainedText()
+    {
+        if(gc.gameOver)
+        {
+            string text = "+ " + gc.donutsGained + " Coins";
+            if(!coinsGainedText.gameObject.activeSelf) coinsGainedText.gameObject.SetActive(true);
+            if(coinsGainedText.text != text) coinsGainedText.text = text;
+        }
+        else
+        {
+            if(coinsGainedText.gameObject.activeSelf) coinsGainedText.gameObject.SetActive(false);
         }
     }
 

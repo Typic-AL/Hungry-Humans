@@ -23,7 +23,7 @@ public class die : MonoBehaviour
             audioSource.PlayOneShot(audioSource.clip);
             soundPlayed = true;
         }
-        print(gm.i.spawnedAis.Count);
+        //print(gm.i.spawnedAis.Count);
     }
 
     public void Die()

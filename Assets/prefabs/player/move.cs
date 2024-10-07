@@ -24,19 +24,25 @@ public class move : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if(joystick.Horizontal == 0 && joystick.Vertical == 0)
+        if(!gm.i.gc.gameOver)
         {
-            rb.velocity = new Vector3(Mathf.Lerp(rb.velocity.x, 0, .5f), rb.velocity.y, Mathf.Lerp(rb.velocity.z, 0, .2f));
+            if(joystick.Horizontal == 0 && joystick.Vertical == 0)
+            {
+                rb.velocity = new Vector3(Mathf.Lerp(rb.velocity.x, 0, .5f), rb.velocity.y, Mathf.Lerp(rb.velocity.z, 0, .2f));
+            }
+            else
+            {
+                rb.velocity = new Vector3(joystick.Horizontal * speed, rb.velocity.y, joystick.Vertical * speed);
+            }     
+
+            if (joystick.Horizontal != 0 || joystick.Vertical != 0)
+            {
+                transform.rotation = Quaternion.LookRotation(rb.velocity);
+            }
         }
         else
-        {
-            rb.velocity = new Vector3(joystick.Horizontal * speed, rb.velocity.y, joystick.Vertical * speed);
-        }     
-
-        if (joystick.Horizontal != 0 || joystick.Vertical != 0)
-        {
-            transform.rotation = Quaternion.LookRotation(rb.velocity);
-        }
+            rb.velocity = new Vector3(0f, 0f, 0f);
+        
 
     }
 

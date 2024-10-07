@@ -25,7 +25,7 @@ public class Grow : MonoBehaviour
     private float camInitZ;
     #endregion
 
-    [SerializeField] private Timer foodTimer;
+    [SerializeField] public Timer foodTimer;
 
     #region scale variables
     private Vector3 scale;
@@ -61,7 +61,11 @@ public class Grow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gm.i.foodTimerCountdownAmount = Time.deltaTime + (Time.deltaTime * .1f * level);
+        if(gm.i.gc.gameOver)
+        {
+            foodTimer.StopTimer();
+        }
+        gm.i.foodTimerCountdownAmount = Time.deltaTime + (Time.deltaTime * .1f * level * 2);
         if(canGrow)
         {
             if (timeElapsed <= scaleDuration)
@@ -99,8 +103,10 @@ public class Grow : MonoBehaviour
 
     private void Eat(FoodItem f)
     {
-        if(f.sizeReq <= level)
+        if(f.sizeReq <= level && !gm.i.gc.gameOver && checkAILvl(f))
         {
+            
+            
             chompAudio.PlayOneShot(chompAudio.clip);
             foodTimer.seconds = 10;//+ (level);
             foodTimer.timeRemaining += f.timeAdded;
@@ -117,6 +123,21 @@ public class Grow : MonoBehaviour
             Destroy(f.gameObject);
             grow();
         }
+    }
+
+    private bool checkAILvl(FoodItem f)
+    {
+        ai _ai = null;
+            
+            if(f.gameObject.gameObject.GetComponent<ai>() != null)
+                _ai = f.gameObject.GetComponent<ai>();
+            else
+                return true;
+
+            if(_ai != null && level > _ai.level)
+                return true;
+        
+        return false;
     }
 
     /*public void TestPrint()

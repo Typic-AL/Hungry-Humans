@@ -57,13 +57,25 @@ public class gm
     public List<GameObject> aiTargetedFood = new List<GameObject>(new GameObject[10]);
     public List<ai> spawnedAis = new List<ai>();
     public Grow player;
+    public GameController gc;
+
+    public ai playerHunter = null;
 
     public bool saveFileFound;
 
-    public Upgrades upgrades = new Upgrades(1, 5, 1, 10);
+    public Upgrades upgrades = new Upgrades(1, 25, 1, 50);
     public FoodSpawner foodSpawner;
     public bool dead = false;
     
-    public int coins = 100;
+    public int coins = 0;
+
+    public void Revive()
+    {
+        gc.gameOver = false;
+        dead = false;
+        player.gameObject.SetActive(true);
+        player.foodTimer.StopTimer();
+        player.foodTimer.StartTimer();
+    }
 
 }

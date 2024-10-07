@@ -34,13 +34,13 @@ public class MapManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(canShrink)
+        if(canShrink && !gm.i.gc.gameOver)
         {
             if (timeElapsed <= timeToShrink)
             {
                 timeElapsed += Time.deltaTime;
                 float progress = timeElapsed / timeToShrink;
-                float multi = (1 + 1/3f);
+                //float multi = (1 + 1/3f);
                 //shrinkAmount = Mathf.Abs(wall3Pos.x - (wall3Pos.x / multi));
                 
                 wall2.transform.position = new Vector3(wall2Pos.x, wall2Pos.y, Mathf.Lerp(wall2Pos.z, wall2Pos.z - (shrinkAmount * 2), progress));
@@ -52,6 +52,8 @@ public class MapManager : MonoBehaviour
                 canShrink = false;
                 timer.StartTimer();
         }
+        else if((!canShrink || canShrink) && gm.i.gc.gameOver)
+            timer.StopTimer();
     }
 
     public void ShrinkMap()

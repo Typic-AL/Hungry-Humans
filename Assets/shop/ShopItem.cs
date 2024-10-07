@@ -14,6 +14,7 @@ public class ShopItem : MonoBehaviour
 {
     public float price;
     public ItemType type;
+    public AudioSource buyAudio;
 
     public Upgrade speed = new Upgrade(0, 0);
     public Upgrade range = new Upgrade(0, 0);
@@ -24,6 +25,8 @@ public class ShopItem : MonoBehaviour
     [SerializeField] private bool hasText;
 
     private TextMeshProUGUI itemText;
+
+    private Upgrade upgrade;
     
     
     // Start is called before the first frame update
@@ -38,6 +41,10 @@ public class ShopItem : MonoBehaviour
             
         }
 
+        if(stringContains(itemName, "speed"))
+            upgrade = speed;
+        else if(stringContains(itemName, "range"))
+            upgrade = range;
         
     }
 
@@ -48,6 +55,8 @@ public class ShopItem : MonoBehaviour
     {
         if(ended) setVarStart();
 
+        
+
         if(hasText)
         {
             switch(type)
@@ -55,6 +64,10 @@ public class ShopItem : MonoBehaviour
                 case ItemType.UPGRADE:
                     setText("speed", "Speed Lvl " + (speed.lvl + 1).ToString() + ":\n" + price.ToString() + " coins");
                     setText("range", "Food Value Lvl " + (range.lvl + 1).ToString() + ":\n" + price.ToString() + " coins");
+                    if(speed.lvl == 10)
+                        setText("speed", "Speed Lvl Max");
+                    if(range.lvl == 10)
+                        setText("range", "Food Value Lvl Max");
                     break;
             }
         }
@@ -83,9 +96,10 @@ public class ShopItem : MonoBehaviour
 
     public void Buy()
     {
-        if(gm.i.coins >= price)
+        if(gm.i.coins >= price && upgrade.lvl < 10)
         {
             gm.i.coins -= (int)price;
+            buyAudio.PlayOneShot(buyAudio.clip);
 
             switch(type)
             {
@@ -119,6 +133,9 @@ public class ShopItem : MonoBehaviour
 
         if(stringContains(itemName, "speed")) price = speed.price;
         if(stringContains(itemName, "range")) price = range.price;
+
+        if(stringContains(itemName, "speed")) upgrade = speed;
+        else upgrade = range;
 
         ended = false;
     }
