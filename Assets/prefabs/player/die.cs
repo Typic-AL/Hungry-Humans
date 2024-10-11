@@ -6,7 +6,7 @@ public class die : MonoBehaviour
 {
     // Start is called before the first frame update
     public AudioSource audioSource;
-    private bool soundPlayed = false;
+    
     
     void Start()
     {
@@ -18,10 +18,10 @@ public class die : MonoBehaviour
     {
         gm.i.dead = !gm.i.player.gameObject.activeSelf;
 
-        if(gm.i.dead && !soundPlayed)
+        if(gm.i.dead && !gm.i.deathSoundPlayed)
         {
             audioSource.PlayOneShot(audioSource.clip);
-            soundPlayed = true;
+            gm.i.deathSoundPlayed = true;
         }
         //print(gm.i.spawnedAis.Count);
     }

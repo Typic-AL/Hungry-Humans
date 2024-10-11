@@ -59,6 +59,8 @@ public class gm
     public Grow player;
     public GameController gc;
 
+    public bool deathSoundPlayed = false;
+
     public ai playerHunter = null;
 
     public bool saveFileFound;
@@ -69,10 +71,13 @@ public class gm
     
     public int coins = 0;
 
+    public bool coinsDoubled = false;
+
     public void Revive()
     {
         gc.gameOver = false;
         dead = false;
+        deathSoundPlayed = false;
         player.gameObject.SetActive(true);
         player.foodTimer.StopTimer();
         player.foodTimer.StartTimer();

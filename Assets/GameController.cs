@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using System;
 
 public class GameController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class GameController : MonoBehaviour
     public AudioSource musicSource;
 
     int startAis = 0;
+
+    public Rewarded rewardAd;
     
     void OnValidate()
     {
@@ -46,7 +49,15 @@ public class GameController : MonoBehaviour
             else if(gm.i.spawnedAis.Count > 0 && gm.i.dead)
             {
                 won = false;
-                donutsGained = (startAis - gm.i.spawnedAis.Count) * 10 * (gm.i.player.level / 2);
+                if((startAis - gm.i.spawnedAis.Count) > 0)
+                {
+                    donutsGained = (startAis - gm.i.spawnedAis.Count) * 10 * (gm.i.player.level / 2);
+                }
+                else
+                {
+                    donutsGained = 10 * gm.i.player.level;
+                }
+                
                 gameOver = true;
                 //gm.i.coins += donutsGained;
             }
@@ -60,13 +71,30 @@ public class GameController : MonoBehaviour
 
     public void Revive()
     {
+        rewardAd.ShowRewardedAd(ReviveAction);
+    }
+
+    void ReviveAction()
+    {
         gm.i.Revive();
         musicSource.UnPause();
+    }
+
+    public void DoubleCoins()
+    {
+        rewardAd.ShowRewardedAd(DoubleCoinsAction);
+        gm.i.coinsDoubled = true;
+    }
+    
+    void DoubleCoinsAction()
+    {
+        donutsGained *= 2;
     }
 
     public void Menu()
     {
         gm.i.coins += donutsGained;
+        gm.i.coinsDoubled = false;
         
         SaveSystem.Save(gm.i);
         SceneManager.LoadScene("Main Menu");

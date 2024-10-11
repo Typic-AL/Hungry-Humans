@@ -164,7 +164,15 @@ public class ai : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(rb.velocity);
         }
         else
-            rb.velocity = new Vector3(0f, 0f, 0f);
+        {
+            Vector3 direction = -1 * (player.transform.position - transform.position).normalized;
+            float distanceToTarget = Vector3.Distance(transform.position, chosenTargetPos);
+            
+            rb.velocity = Vector3.Lerp(rb.velocity, direction * moveSpeed, Time.deltaTime * 2f);
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            transform.rotation = Quaternion.LookRotation(rb.velocity);
+        }
+            
         
     }
 
