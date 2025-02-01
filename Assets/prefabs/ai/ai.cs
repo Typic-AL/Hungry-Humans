@@ -142,9 +142,11 @@ public class ai : MonoBehaviour
         {
             target = "food";
 
-            if(foodTransform == null) foodTransform = FindClosestFood(transform.position);
+            try{if(foodTransform == null) foodTransform = FindClosestFood(transform.position);}
+            catch(Exception ex){}
 
-            chosenTargetPos = foodTransform.position;
+            try{chosenTargetPos = foodTransform.position;}
+            catch(Exception ex){}
         }
     
     }

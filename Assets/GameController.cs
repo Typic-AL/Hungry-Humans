@@ -15,10 +15,8 @@ public class GameController : MonoBehaviour
     public AudioSource musicSource;
 
     int startAis = 0;
-
-    public Rewarded rewardAd;
     
-    void OnValidate()
+    void Awake()
     {
         gm.i.gc = GetComponent<GameController>();
     }
@@ -69,32 +67,33 @@ public class GameController : MonoBehaviour
         
     }
 
-    public void Revive()
-    {
-        rewardAd.ShowRewardedAd(ReviveAction);
-    }
+    // public void Revive()
+    // {
+    //     rewardAd.ShowRewardedAd(ReviveAction);
+    // }
 
-    void ReviveAction()
-    {
-        gm.i.Revive();
-        musicSource.UnPause();
-    }
+    // void ReviveAction()
+    // {
+    //     gm.i.Revive();
+    //     musicSource.UnPause();
+    // }
 
-    public void DoubleCoins()
-    {
-        rewardAd.ShowRewardedAd(DoubleCoinsAction);
-        gm.i.coinsDoubled = true;
-    }
+    // public void DoubleCoins()
+    // {
+    //     rewardAd.ShowRewardedAd(DoubleCoinsAction);
+    //     gm.i.coinsDoubled = true;
+    // }
     
-    void DoubleCoinsAction()
-    {
-        donutsGained *= 2;
-    }
+    // void DoubleCoinsAction()
+    // {
+    //     donutsGained *= 2;
+    // }
 
     public void Menu()
     {
         gm.i.coins += donutsGained;
         gm.i.coinsDoubled = false;
+        gm.i.deathSoundPlayed = false;
         
         SaveSystem.Save(gm.i);
         SceneManager.LoadScene("Main Menu");

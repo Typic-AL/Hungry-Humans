@@ -38,7 +38,7 @@ public class Grow : MonoBehaviour
     
     
     // Start is called before the first frame update
-    void OnValidate()
+    void Awake()
     {
         gm.i.player = GetComponent<Grow>();
     }

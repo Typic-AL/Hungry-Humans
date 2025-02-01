@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        winAudio = winScreen.GetComponent<AudioSource>();
+        if(winScreen) winAudio = winScreen.GetComponent<AudioSource>();
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
         {
             
@@ -49,6 +49,7 @@ public class UIManager : MonoBehaviour
         if(SceneManager.GetActiveScene() == SceneManager.GetSceneByName("Main Menu"))
         {
             UpdateCoinsText(coinsText);
+            gm.i.deathSoundPlayed = false;
         }
         
         

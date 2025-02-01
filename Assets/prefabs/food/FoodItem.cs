@@ -28,7 +28,7 @@ public class FoodItem : MonoBehaviour
     public float heightOffset;
 
     // Start is called before the first frame update
-    void OnValidate()
+    void Awake()
     {
         switch(rarity)
         {
